@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT
 from .serializers import TweetListSerializer
 import requests
 from bs4 import BeautifulSoup
@@ -26,7 +26,8 @@ class TweetsListView(APIView):
         hashtags = content.find_all('a', {'class': 'twitter-hashtag pretty-link js-nav'})
         hashtags_list = []
         for hashtag in hashtags:
-            hashtags_list.append(hashtag.text)
+            hashtag_dict = {'hashtag': hashtag.text}
+            hashtags_list.append(hashtag_dict)
         tweet_dict['hashtags'] = hashtags_list
         return tweet_dict
 
@@ -63,9 +64,11 @@ class TweetsListView(APIView):
         resquest_response = self.get_profile_url(twitter_user_name)
         if resquest_response.status_code == 200:
             return self.get_tweets_list(resquest_response, limit)
+        return None
 
     def get(self, request, *args, **kwargs):
         twitter_user_name = kwargs.get('twitter_user_name')
-        limit = request.GET.get('limit', 10)
-        return Response(self.serializers_class(self.get_tweets(twitter_user_name, int(limit)), many=True).data,
-                        status=HTTP_200_OK)
+        limit = request.GET.get('limit', 30)
+        tweets = self.get_tweets(twitter_user_name, int(limit))
+        return Response(self.serializers_class(tweets, many=True).data, status=HTTP_200_OK) if tweets else Response({},
+                                                                                                                    status=HTTP_204_NO_CONTENT)
