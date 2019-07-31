@@ -1,10 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT
+from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
 from tweets.serializers import TweetListSerializer
 from twitter import services
 from bs4 import BeautifulSoup
-from twitter.constant import HASHTAG_URL, DEFAULT_LIMIT, SUCCESS_STATUS_CODE, INVALID_URL_ERROR,HASHTAG_TWEET_CLASS
+from twitter.constant import HASHTAG_URL, DEFAULT_LIMIT, INVALID_URL_ERROR, HASHTAG_TWEET_CLASS, MAX_LIMIT, \
+    LIMIT_OUTOF_BOUND
 
 
 class HashTagsListView(APIView):
@@ -29,16 +30,18 @@ class HashTagsListView(APIView):
 
     def get_tweets(self, hashtag, limit):
         url = HASHTAG_URL.format(hashtag)
-        resquest_response = services.url_validation(url)
-        if resquest_response.status_code == SUCCESS_STATUS_CODE:
-            page_source = services.get_page_content(url, limit,HASHTAG_TWEET_CLASS)
+        resquest_response = services.url_validation(url, HASHTAG_TWEET_CLASS)
+        if resquest_response:
+            page_source = services.get_page_content(url, limit, HASHTAG_TWEET_CLASS)
             return self.get_tweets_list(page_source, limit)
         return None
 
     def get(self, request, *args, **kwargs):
         hashtag = kwargs.get('hashtag')
-        limit = request.GET.get('limit', DEFAULT_LIMIT)
-        tweets = self.get_tweets(hashtag, int(limit))
+        limit = int(request.GET.get('limit', DEFAULT_LIMIT))
+        if (limit > MAX_LIMIT) or (limit < 0):
+            return Response({'error': LIMIT_OUTOF_BOUND}, status=HTTP_400_BAD_REQUEST)
+        tweets = self.get_tweets(hashtag, limit)
         return Response(self.serializers_class(tweets, many=True).data, status=HTTP_200_OK) if tweets else Response(
-            {'error': INVALID_URL_ERROR},
+            {'ValidationError': INVALID_URL_ERROR},
             status=HTTP_204_NO_CONTENT)
