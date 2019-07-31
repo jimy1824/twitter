@@ -3,42 +3,51 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-from .constant import BROWSER_HEADERS, PAGE_SCROLL_SCRIPT
+from .constant import PAGE_SCROLL_SCRIPT
 
 
-def url_validation(url):
-    headers = requests.utils.default_headers()
-    headers.update({
-        'User-Agent': BROWSER_HEADERS, })
-    return requests.get(url, headers=headers)
-
-
-def check_limit(browser, limit,tweet_class):
+def get_tweets(browser, tweet_class):
     source_data = browser.page_source
     bs = BeautifulSoup(source_data, 'lxml')
     all_tweets = bs.find_all('div', attrs={'class': tweet_class})
-    if len(all_tweets) >= limit:
+    return all_tweets
+
+
+def url_validation(url, tweet_class):
+    browser = webdriver.Chrome(ChromeDriverManager().install())
+    browser.get(url)
+    all_tweets = get_tweets(browser, tweet_class)
+    if len(all_tweets) == 0:
+        return False
+    return True
+
+
+def check_limit(browser, limit, tweet_class):
+    all_tweets = get_tweets(browser, tweet_class)
+    header = all_tweets[0].find('div', attrs={'class': 'stream-item-header'})
+    if (len(all_tweets) >= limit) or (header == None):
         return True
     return False
 
 
-def get_page_content(url, limit,tweet_class):
+def get_page_content(url, limit, tweet_class):
     browser = webdriver.Chrome(ChromeDriverManager().install())
     browser.get(url)
     required_limit = False
     while not required_limit:
-        len_of_page = browser.execute_script(PAGE_SCROLL_SCRIPT)
-        if check_limit(browser, limit,tweet_class):
+        browser.execute_script(PAGE_SCROLL_SCRIPT)
+        if check_limit(browser, limit, tweet_class):
             required_limit = True
         browser.implicitly_wait(2)
-
     return browser.page_source
 
 
 def get_account_info(header, tweet_dict):
     profile = header.find('a', {
         'class': 'account-group js-account-group js-action-profile js-user-profile-link js-nav'})
-    fullname = profile.find('strong', {'class': 'fullname show-popup-with-id u-textTruncate'}).text
+    fullname = profile.find('strong', {'class': 'fullname show-popup-with-id u-textTruncate'})
+    if fullname:
+        fullname = fullname.text
     tweet_dict['account'] = {'id': profile.get('data-user-id'), 'full_name': fullname, 'href': profile.get('href')}
     return tweet_dict
 

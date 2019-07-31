@@ -7,3 +7,5 @@ SUCCESS_STATUS_CODE = 200
 INVALID_URL_ERROR = 'Requested URL is not valid.'
 HASHTAG_TWEET_CLASS = 'content'
 TWEET_CLASS = 'content'
+MAX_LIMIT = 50
+LIMIT_OUTOF_BOUND = 'Requested limit is not valid.'
