@@ -1,0 +1,51 @@
+Project Name
+twitter
+
+its project based on two apis for getting tweets
+(1) Get the list of tweets of a user
+    url=http://127.0.0.1:8001/users/ImranKhanPTI?limit=50
+    local_server_adress=127.0.0.1:8001/
+    agruments (1) user twitter name eg ImranKhanPTI  (2) limit of tweets limit=50  its optional argument default is 30
+    apis return jason response
+(2)  Get the list of tweets with the given hashtag
+     url=http://127.0.0.1:8001/hashtags/pakistan?limit=10
+     local_server_adress=127.0.0.1:8001/
+     agruments (1) hashtag eg pakistan  (2) limit of tweets limit=50  its optional argument default is 30
+     apis return jason response
+
+
+
+
+
+
+Installation
+(1):github link for get clone or download repository (public repository)
+    github link :https://github.com/jimy1824/twitter.git
+(2):project require python 3.6 install python
+(3):install requirements
+      command pip install -r requirements.txt
+(4):runserver
+     command   python manage.py runserver
+     bydefault on local server  url http://127.0.0.1:8000/
+
+
+
+Usage
+
+api based  project for api call use postman or anyother source
+
+(1) Get the list of tweets of a user
+    url=http://127.0.0.1:8001/users/ImranKhanPTI?limit=50
+    local_server_adress=127.0.0.1:8001/
+    agruments (1) user twitter name eg ImranKhanPTI  (2) limit of tweets limit=50  its optional argument default is 30
+    apis return jason response
+(2)  Get the list of tweets with the given hashtag
+     url=http://127.0.0.1:8001/hashtags/pakistan?limit=10
+     local_server_adress=127.0.0.1:8001/
+     agruments (1) hashtag eg pakistan  (2) limit of tweets limit=50  its optional argument default is 30
+     apis return jason response
+
+
+License
+created by jamshaid iqbal
+github https://github.com/jimy1824/
