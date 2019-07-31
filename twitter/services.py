@@ -65,7 +65,8 @@ def get_hashtags(content, tweet_dict):
 def get_stat(content, tweet_dict):
     footer = content.find('div', {'class': 'stream-item-footer'})
     stat = footer.find('div', {'class': 'ProfileTweet-actionCountList u-hiddenVisually'}).text.replace("\n",
-                                                                                                       " ").strip()
+                                                                                                       " ").replace(".",
+                                                                                                                    "").strip()
     replies_count, replies, retweets_count, retweets, likes_count, likes = stat.split()
     tweet_dict['replies'] = int("".join(replies_count.replace(',', '')))
     tweet_dict['retweets'] = int("".join(retweets_count.replace(',', '')))
