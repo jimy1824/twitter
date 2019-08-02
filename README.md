@@ -71,18 +71,22 @@ http://127.0.0.1:8000/users/ImranKhanPTI?limit=30
    2. Limit of tweets e.g limit=30 (its optional argument default is 30 and max_limit=50)
         
         APIs return json response
+        
+       ![Alt text](static/ge_list_of_tweets.png?raw=true "Title")
 
 
 
 Get the list of tweets with the given hashtag, e.g:
 ```
-http://127.0.0.1:8000/hashtags/pakistan?limit=30
+http://127.0.0.1:8000/hashtags/hashtag?limit=30
 ```
 Expected arguments
    1. hashtag e.g pakistan  
    2. Limit of tweets limit=30 (its optional argument default is 30 and max_limit=50)
    
         APIs return json response
+   
+         ![Alt text](static/get_list_of_hashtag_tweets.png?raw=true "Title")       
 
 ## Built With
 
