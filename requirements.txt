@@ -5,7 +5,7 @@ colorama==0.4.1
 configparser==3.7.4
 crayons==0.2.0
 Django==2.2.3
-djangorestframework==3.10.2
+djangorestframework==3.11.2
 idna==2.8
 lxml==4.4.0
 pytz==2019.1
